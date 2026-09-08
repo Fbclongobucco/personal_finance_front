@@ -158,7 +158,7 @@ export default function DashboardPage() {
       )}
 
       <div className="mt-6">
-        <h2 className="mb-2 text-sm font-semibold text-ink-800">Últimas transações</h2>
+        <h2 className="mb-2 text-sm font-semibold text-ink-800">Transações do mês</h2>
         {isLoading ? (
           <Spinner label="Carregando transações…" />
         ) : summary.recent.length === 0 ? (

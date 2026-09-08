@@ -68,10 +68,15 @@ changes — don't assume this summary stays accurate forever.
   rely on `body.message`. (A truly malformed JSON body returns Spring's default
   `{timestamp,status,error,path}` instead, which `apiClient` still surfaces via `detail ?? fallback`.)
 - **Dates**: `createdAt`/`updatedAt` on `User` are `LocalDate` (`"2026-09-07"`, no time). On
-  `Category`/`Transaction` they're `LocalDateTime` with no timezone offset. Query params `start`/`end`
-  on transaction listing are also naive `LocalDateTime` strings — see `toLocalDateTimeParam` /
-  `startOfDayParam` / `endOfDayParam` in `src/presentation/lib/formatters.ts`. We send local wall-clock
-  time as-is; there's no timezone reconciliation with the server.
+  `Category`/`Transaction` they're `LocalDateTime` with no timezone offset — the **deployed server runs
+  UTC**, so naive values are UTC wall-clock. The frontend must therefore (a) send period bounds as
+  UTC wall-clock via `toServerDateTimeParam`/`startOfDayParam`/`endOfDayParam`, and (b) parse naive
+  values as UTC for display/bucketing via `parseServerDateTime` — both in
+  `src/presentation/lib/formatters.ts`. Without this, a transaction created after ~21:00 in
+  America/Sao_Paulo lands "tomorrow" server-side and falls outside the current-month filter, leaving
+  the dashboard month summary at R$ 0. Query params `start`/`end` on transaction listing are naive
+  `LocalDateTime` strings. (Do NOT switch the frontend back to sending local wall-clock time — only
+  `startOfMonth`/`toDateInputValue`/date inputs stay local-calendar.)
 
 ## Why there's a same-origin proxy (`next.config.ts`)
 

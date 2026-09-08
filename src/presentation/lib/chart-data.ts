@@ -1,4 +1,5 @@
 import { Transaction } from "@/domain/entities/transaction";
+import { parseServerDateTime } from "@/presentation/lib/formatters";
 
 export interface MonthlyPoint {
   key: string;
@@ -20,7 +21,7 @@ export function buildMonthlySeries(transactions: Transaction[], monthsBack = 6):
 
   const byKey = new Map(months.map((month) => [month.key, month]));
   for (const transaction of transactions) {
-    const date = new Date(transaction.createdAt);
+    const date = parseServerDateTime(transaction.createdAt) ?? new Date(0);
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
     const bucket = byKey.get(key);
     if (!bucket) continue;
