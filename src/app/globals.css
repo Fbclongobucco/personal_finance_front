@@ -1,8 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f7f7;
+  --foreground: #1c1917;
+
+  /* Brand palette carried over from the Soler admin template (deep red mark). */
+  --color-brand-50: #fdf2f3;
+  --color-brand-100: #fbe1e3;
+  --color-brand-200: #f6c8cc;
+  --color-brand-300: #eda1a8;
+  --color-brand-400: #df707c;
+  --color-brand-500: #cb4655;
+  --color-brand-600: #ab2836;
+  --color-brand-700: #8f1d2a;
+  --color-brand-800: #6f1720;
+  --color-brand-900: #4a0f16;
+  --color-brand-950: #2c0a0d;
+
+  --color-ink-50: #f7f7f7;
+  --color-ink-100: #ececeb;
+  --color-ink-200: #d6d4d2;
+  --color-ink-300: #b5b1ad;
+  --color-ink-400: #8d8781;
+  --color-ink-500: #6f6963;
+  --color-ink-600: #59524c;
+  --color-ink-700: #48423d;
+  --color-ink-800: #302b27;
+  --color-ink-900: #1c1917;
+  --color-ink-950: #100e0d;
+
+  /* "Money" accent: income / positive amounts / growth. Pairs with brand red for expenses. */
+  --color-money-50: #ecfdf5;
+  --color-money-100: #d1fae5;
+  --color-money-200: #a7f3d0;
+  --color-money-300: #6ee7b7;
+  --color-money-400: #34d399;
+  --color-money-500: #10b981;
+  --color-money-600: #059669;
+  --color-money-700: #047857;
+  --color-money-800: #065f46;
+  --color-money-900: #064e3b;
+  --color-money-950: #022c22;
 }
 
 @theme inline {
@@ -10,17 +48,49 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-brand-50: var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-200: var(--color-brand-200);
+  --color-brand-300: var(--color-brand-300);
+  --color-brand-400: var(--color-brand-400);
+  --color-brand-500: var(--color-brand-500);
+  --color-brand-600: var(--color-brand-600);
+  --color-brand-700: var(--color-brand-700);
+  --color-brand-800: var(--color-brand-800);
+  --color-brand-900: var(--color-brand-900);
+  --color-brand-950: var(--color-brand-950);
+
+  --color-ink-50: var(--color-ink-50);
+  --color-ink-100: var(--color-ink-100);
+  --color-ink-200: var(--color-ink-200);
+  --color-ink-300: var(--color-ink-300);
+  --color-ink-400: var(--color-ink-400);
+  --color-ink-500: var(--color-ink-500);
+  --color-ink-600: var(--color-ink-600);
+  --color-ink-700: var(--color-ink-700);
+  --color-ink-800: var(--color-ink-800);
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-950: var(--color-ink-950);
+
+  --color-money-50: var(--color-money-50);
+  --color-money-100: var(--color-money-100);
+  --color-money-200: var(--color-money-200);
+  --color-money-300: var(--color-money-300);
+  --color-money-400: var(--color-money-400);
+  --color-money-500: var(--color-money-500);
+  --color-money-600: var(--color-money-600);
+  --color-money-700: var(--color-money-700);
+  --color-money-800: var(--color-money-800);
+  --color-money-900: var(--color-money-900);
+  --color-money-950: var(--color-money-950);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background-color: var(--color-brand-200);
 }

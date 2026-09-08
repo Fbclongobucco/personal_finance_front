@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Finance App — Controle Financeiro Pessoal
 
-## Getting Started
+Front-end em Next.js (App Router) + TypeScript + Tailwind para o backend Spring Boot em [`../personal_finance_app`](../personal_finance_app). Landing page pública, autenticação com access/refresh token e um painel para controlar saldo, receitas, despesas e categorias.
 
-First, run the development server:
+## Rodando localmente
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configuração
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O backend não tem CORS configurado, então o browser nunca pode chamá-lo diretamente de outra origem. Para contornar isso sem tocar no backend, `next.config.ts` reescreve `/backend/*` para a API real — toda chamada do browser fica same-origin.
 
-## Learn More
+Copie `.env.example` para `.env.local` e ajuste se necessário:
 
-To learn more about Next.js, take a look at the following resources:
+```
+BACKEND_API_URL=http://api-personal-finance.fabriciolongobuccodev.com.br
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Arquitetura
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Camadas inspiradas em Clean Architecture, com um container de injeção de dependência manual (`src/infrastructure/container.ts`):
 
-## Deploy on Vercel
+- `src/domain` — entidades e contratos de repositório (sem dependência de framework).
+- `src/application` — casos de uso (ex.: `AuthService`, que orquestra login/registro e busca do perfil).
+- `src/infrastructure` — implementação HTTP dos repositórios, cliente HTTP com refresh automático de token, storage de sessão.
+- `src/presentation` — providers, hooks (`@tanstack/react-query`), componentes de UI e as páginas em `src/app`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Autenticação
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O access token dura 15 min e o refresh token 7 dias (configurado no backend). O `ApiClient` (`src/infrastructure/http/api-client.ts`) anexa o Bearer token em toda chamada autenticada e, ao receber um 401, tenta renovar via `/auth/refresh` uma única vez (com deduplicação de chamadas concorrentes) antes de encerrar a sessão.
+
+Para testar rapidamente como ADMIN (permite criar/excluir categorias), use as credenciais padrão do backend definidas em `application.yaml` (`APP_ADMIN_EMAIL`/`APP_ADMIN_PASSWORD`), caso não tenham sido sobrescritas no servidor.

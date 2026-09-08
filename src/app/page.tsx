@@ -1,69 +1,186 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import {
+  ArrowRight,
+  CheckCircle2,
+  CreditCard,
+  LayoutDashboard,
+  Tags,
+  Wallet,
+} from "lucide-react";
+
+import { Logo } from "@/presentation/components/brand/Logo";
+import { Button } from "@/presentation/components/ui/Button";
+import { Card } from "@/presentation/components/ui/Card";
+import { useAuth } from "@/presentation/providers/auth-provider";
+
+const FEATURES = [
+  {
+    icon: Wallet,
+    title: "Saldo sempre atualizado",
+    description: "Cada receita ou despesa lançada ajusta seu saldo na hora, sem cálculos manuais.",
+  },
+  {
+    icon: Tags,
+    title: "Categorias personalizadas",
+    description: "Separe receitas e despesas em categorias para entender para onde vai seu dinheiro.",
+  },
+  {
+    icon: CreditCard,
+    title: "Formas de pagamento",
+    description: "Registre cada transação com Pix, cartão, dinheiro, boleto ou ticket.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Controle de pendências",
+    description: 'Marque despesas como pagas ("dar baixa") assim que quitar a conta.',
+  },
+];
+
+const STEPS = [
+  { number: "1", title: "Crie sua conta", description: "Cadastro rápido com e-mail, telefone e seu saldo inicial." },
+  { number: "2", title: "Registre transações", description: "Lance receitas e despesas com categoria e forma de pagamento." },
+  { number: "3", title: "Acompanhe seu saldo", description: "Veja seu saldo, pendências e histórico sempre à mão." },
+];
+
+export default function LandingPage() {
+  const { status } = useAuth();
+  const isAuthenticated = status === "authenticated";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-40 border-b border-ink-100 bg-white/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+          <Logo />
+          <nav className="flex items-center gap-2 sm:gap-3">
+            {isAuthenticated ? (
+              <Link href="/dashboard">
+                <Button size="sm">
+                  <LayoutDashboard className="h-4 w-4" />
+                  Ir para o painel
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    Entrar
+                  </Button>
+                </Link>
+                <Link href="/cadastro">
+                  <Button size="sm">Criar conta</Button>
+                </Link>
+              </>
+            )}
+          </nav>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </header>
+
+      <main className="flex-1">
+        <section className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:py-28">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-ink-900 sm:text-4xl lg:text-5xl">
+              Controle suas finanças pessoais sem complicação.
+            </h1>
+            <p className="mt-5 max-w-xl text-base text-ink-600 sm:text-lg">
+              Registre receitas e despesas, organize por categoria e acompanhe seu saldo em tempo real —
+              tudo em um app simples, direto ao ponto e disponível no celular ou no computador.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href={isAuthenticated ? "/dashboard" : "/cadastro"} className="sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto">
+                  {isAuthenticated ? "Ir para o painel" : "Começar grátis"}
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              {!isAuthenticated && (
+                <Link href="/login" className="sm:w-auto">
+                  <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+                    Já tenho conta
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+
+          <div className="relative">
+            <Card className="border-ink-200 shadow-lg">
+              <div className="rounded-lg bg-brand-700 p-4 text-white">
+                <p className="text-xs text-brand-100">Saldo atual</p>
+                <p className="mt-1 text-2xl font-bold">R$ 3.248,90</p>
+              </div>
+              <div className="mt-4 flex flex-col gap-2">
+                {[
+                  { label: "Salário", tone: "money" as const, value: "+ R$ 4.500,00" },
+                  { label: "Supermercado", tone: "brand" as const, value: "- R$ 612,40" },
+                  { label: "Assinaturas", tone: "brand" as const, value: "- R$ 89,90" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between rounded-md border border-ink-100 px-3 py-2">
+                    <span className="text-sm text-ink-700">{item.label}</span>
+                    <span
+                      className={`text-sm font-semibold ${item.tone === "money" ? "text-money-700" : "text-brand-700"}`}
+                    >
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        <section className="border-t border-ink-100 bg-white py-14 sm:py-20">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <h2 className="text-center text-2xl font-bold text-ink-900 sm:text-3xl">Tudo que você precisa para organizar sua grana</h2>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {FEATURES.map((feature) => (
+                <Card key={feature.title} className="text-center sm:text-left">
+                  <feature.icon className="mx-auto h-8 w-8 text-brand-700 sm:mx-0" />
+                  <h3 className="mt-3 font-semibold text-ink-900">{feature.title}</h3>
+                  <p className="mt-1 text-sm text-ink-500">{feature.description}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-14 sm:py-20">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <h2 className="text-center text-2xl font-bold text-ink-900 sm:text-3xl">Como funciona</h2>
+            <div className="mt-10 grid gap-8 sm:grid-cols-3">
+              {STEPS.map((step) => (
+                <div key={step.number} className="text-center">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-700 text-lg font-bold text-white">
+                    {step.number}
+                  </div>
+                  <h3 className="mt-4 font-semibold text-ink-900">{step.title}</h3>
+                  <p className="mt-1 text-sm text-ink-500">{step.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-ink-100 bg-brand-700 py-14 text-center text-white sm:py-16">
+          <div className="mx-auto max-w-2xl px-4 sm:px-6">
+            <h2 className="text-2xl font-bold sm:text-3xl">Comece a organizar sua grana hoje</h2>
+            <p className="mt-3 text-brand-100">Leva menos de um minuto para criar sua conta.</p>
+            <Link href={isAuthenticated ? "/dashboard" : "/cadastro"}>
+              <Button size="lg" className="mt-6 bg-white text-brand-700 hover:bg-brand-50">
+                {isAuthenticated ? "Ir para o painel" : "Criar conta grátis"}
+              </Button>
+            </Link>
+          </div>
+        </section>
       </main>
+
+      <footer className="border-t border-ink-100 bg-white py-8">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left">
+          <Logo markSize={24} />
+          <p className="text-sm text-ink-400">© {new Date().getFullYear()} Personal Finance App. Controle financeiro pessoal.</p>
+        </div>
+      </footer>
     </div>
   );
 }
