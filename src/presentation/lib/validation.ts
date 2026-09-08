@@ -39,5 +39,6 @@ export const transactionSchema = z.object({
   amount: z.coerce.number({ message: "Informe um valor" }).positive("O valor deve ser maior que zero"),
   paymentMethod: z.enum(["CASH", "CREDIT_CARD", "DEBIT_CARD", "INVOICE", "TICKET", "PIX"]),
   paid: z.boolean(),
+  date: z.string().min(1, "Informe a data"),
 });
 export type TransactionFormValues = z.infer<typeof transactionSchema>;

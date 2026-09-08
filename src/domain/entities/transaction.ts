@@ -21,6 +21,7 @@ export interface TransactionInput {
   userId: string;
   paymentMethod: PaymentMethod;
   paid?: boolean;
+  date?: string;
 }
 
 export interface TransactionFilters {

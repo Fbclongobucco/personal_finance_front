@@ -1,7 +1,9 @@
 import { PaymentMethod } from "@/domain/entities/transaction";
 
 export function formatCurrency(value: number | null | undefined): string {
-  if (value === null || value === undefined || Number.isNaN(value)) return "—";
+  if (value === null || value === undefined || Number.isNaN(value)) {
+    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(0);
+  }
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 }
 

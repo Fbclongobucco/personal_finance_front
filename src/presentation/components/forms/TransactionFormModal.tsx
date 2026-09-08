@@ -13,7 +13,7 @@ import { useCategories } from "@/presentation/hooks/use-categories";
 import { useCreateTransaction } from "@/presentation/hooks/use-transactions";
 import { extractErrorMessage, useAuth } from "@/presentation/providers/auth-provider";
 import { useToast } from "@/presentation/providers/toast-provider";
-import { PAYMENT_METHOD_LABELS } from "@/presentation/lib/formatters";
+import { PAYMENT_METHOD_LABELS, toDateInputValue } from "@/presentation/lib/formatters";
 import { TransactionFormValues, transactionSchema } from "@/presentation/lib/validation";
 
 const PAYMENT_METHODS = Object.keys(PAYMENT_METHOD_LABELS) as (keyof typeof PAYMENT_METHOD_LABELS)[];
@@ -36,11 +36,11 @@ export function TransactionFormModal({ open, onClose }: { open: boolean; onClose
     formState: { errors, isSubmitting },
   } = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionSchema),
-    defaultValues: { description: "", categoryId: "", amount: 0, paymentMethod: "PIX", paid: false },
+    defaultValues: { description: "", categoryId: "", amount: 0, paymentMethod: "PIX", paid: false, date: toDateInputValue(new Date()) },
   });
 
   useEffect(() => {
-    if (open) reset({ description: "", categoryId: "", amount: 0, paymentMethod: "PIX", paid: false });
+    if (open) reset({ description: "", categoryId: "", amount: 0, paymentMethod: "PIX", paid: false, date: toDateInputValue(new Date()) });
   }, [open, reset]);
 
   // The just-created category only exists as a real <option> once the categories list has
@@ -65,6 +65,7 @@ export function TransactionFormModal({ open, onClose }: { open: boolean; onClose
         paymentMethod: values.paymentMethod,
         userId: session.user.id,
         paid: isExpense ? values.paid : true,
+        date: values.date ? `${values.date}T12:00:00` : undefined,
       });
       toast.success("Transação registrada com sucesso.");
       onClose();
@@ -77,6 +78,8 @@ export function TransactionFormModal({ open, onClose }: { open: boolean; onClose
     <Modal open={open} onClose={onClose} title="Nova transação">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <Input label="Descrição" required placeholder="Ex: Supermercado, Salário..." {...register("description")} error={errors.description?.message} />
+
+        <Input label="Data" required type="date" {...register("date")} error={errors.date?.message} />
 
         <Select
           label="Categoria"
