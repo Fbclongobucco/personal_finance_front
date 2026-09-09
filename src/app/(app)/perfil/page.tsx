@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut, Mail, Pencil, Phone, ShieldCheck, Trash2, Wallet } from "lucide-react";
+import { LogOut, Mail, Phone, ShieldCheck, Trash2, Wallet } from "lucide-react";
 
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { ProfileFormModal } from "@/components/forms/ProfileFormModal";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useCurrentUser, useDeleteAccount } from "@/hooks/use-user";
 import { formatDate } from "@/lib/formatters";
@@ -20,7 +19,6 @@ export default function ProfilePage() {
   const deleteAccount = useDeleteAccount();
   const toast = useToast();
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
 
   async function handleDeleteAccount() {
     if (!session) return;
@@ -35,16 +33,7 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <PageHeader
-        title="Perfil"
-        description="Suas informações de conta."
-        action={
-          <Button variant="secondary" onClick={() => setEditOpen(true)}>
-            <Pencil className="h-4 w-4" />
-            Editar perfil
-          </Button>
-        }
-      />
+      <PageHeader title="Perfil" description="Suas informações de conta." />
 
       <Card>
         <div>
@@ -97,8 +86,6 @@ export default function ProfilePage() {
         danger
         isLoading={deleteAccount.isPending}
       />
-
-      <ProfileFormModal open={editOpen} onClose={() => setEditOpen(false)} />
     </div>
   );
 }

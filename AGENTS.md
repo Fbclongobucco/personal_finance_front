@@ -48,14 +48,10 @@ changes — don't assume this summary stays accurate forever.
   the signed-in user's own data, so a 403 from the app itself means the token was rejected.
 - **No "list all users" endpoint exists.** Only `GET /api/users?email=` and `GET /api/users/{id}`.
   There is intentionally no admin "user management" page in this app for that reason.
-- **There is no user *update* endpoint yet** — `UserController` has POST (ADMIN-only), GET by id,
-  GET by email and DELETE, nothing else. The front-end already ships the edit UI
-  (`ProfileFormModal` → `usersService.update` → `useUpdateUser`) against an **assumed** contract:
-  `PUT /api/users/{id}`, body `{name, phone}` (mirroring `UserRequestDto`'s field names), response
-  `UserResponseDto`. Until that endpoint exists the call returns 404/405 and the modal says so
-  explicitly — delete that special case in `ProfileFormModal.onSubmit` once it ships. E-mail is
-  deliberately out of the payload: it is the JWT subject, so changing it would invalidate the
-  caller's own token mid-request.
+- **There is no user *update* endpoint** — `UserController` has POST (ADMIN-only), GET by id,
+  GET by email and DELETE, nothing else. So the profile page is read-only by design: don't build an
+  edit form until the backend grows one. If it ever does, keep e-mail out of the payload — it is the
+  JWT subject, so changing it would invalidate the caller's own token mid-request.
 - **Categories are owned by the user** (`userId` on every `CategoryResponseDto`). Every new account
   (and the bootstrap ADMIN) is seeded with a default set (Salário, Alimentação, Moradia, ...), so
   the "Nova categoria" action is for extra ones. `GET /api/categories` without `userId` returns the
@@ -256,7 +252,7 @@ Plus `--background`/`--foreground` applied to `body`, and a `::selection` in `br
 | `(app)/transacoes` | idem | Date-range + type filters, full list with settle ("dar baixa") and delete |
 | `(app)/historico` | idem | Month stepper (cannot advance past the current month) + 12 quick-jump chips, month summary cards, donut, transaction list |
 | `(app)/categorias` | idem | INCOME/EXPENSE tabs, create modal, delete behind `ConfirmDialog` (409 when still referenced) |
-| `(app)/perfil` | idem | Profile data, edit name/phone (`ProfileFormModal`, pending backend endpoint), logout, delete-account behind `ConfirmDialog` |
+| `(app)/perfil` | idem | Profile data (read-only — no update endpoint), logout, delete-account behind `ConfirmDialog` |
 
 `(app)/layout.tsx` renders `Sidebar` (desktop) + `MobileTopBar` + `BottomNav` (mobile) around the page.
 

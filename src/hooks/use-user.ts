@@ -1,4 +1,4 @@
-import { User, UserUpdateInput } from "@/types";
+import { User } from "@/types";
 import { usersService } from "@/services/users";
 import { useAuth } from "@/providers/auth-provider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -17,20 +17,6 @@ export function useCurrentUser() {
     },
     enabled: Boolean(userId),
     initialData: session?.user,
-  });
-}
-
-/** Atualiza nome/telefone do usuário logado e propaga para a sessão persistida. */
-export function useUpdateUser() {
-  const queryClient = useQueryClient();
-  const { session, refreshUser } = useAuth();
-
-  return useMutation({
-    mutationFn: (input: UserUpdateInput) => usersService.update(session!.user.id, input),
-    onSuccess: (user) => {
-      refreshUser(user);
-      queryClient.invalidateQueries({ queryKey: ["user", user.id] });
-    },
   });
 }
 

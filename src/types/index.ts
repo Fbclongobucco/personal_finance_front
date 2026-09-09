@@ -26,12 +26,6 @@ export interface AuthSession extends TokenPair {
   user: User;
 }
 
-/** Campos editáveis do perfil. E-mail fica de fora: é o subject do JWT, trocá-lo invalidaria a sessão. */
-export interface UserUpdateInput {
-  name: string;
-  phone: string;
-}
-
 export interface LoginInput {
   email: string;
   password: string;

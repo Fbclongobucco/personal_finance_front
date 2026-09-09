@@ -30,7 +30,7 @@ interface ProblemDetail {
 }
 
 type RequestOptions = {
-  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
   query?: Record<string, string | number | undefined>;
   /** Skips the Authorization header and the 401-refresh dance (login/register/refresh). */

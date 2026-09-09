@@ -6,19 +6,17 @@ export const loginSchema = z.object({
 });
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
-const phoneField = z
-  .string()
-  .min(1, "Informe o telefone")
-  .refine((value) => {
-    const digits = value.replace(/\D/g, "");
-    return digits.length === 10 || digits.length === 11;
-  }, "Telefone inválido (informe DDD + número)");
-
 export const registerSchema = z
   .object({
     name: z.string().min(2, "Informe seu nome completo"),
     email: z.string().min(1, "Informe o e-mail").email("E-mail inválido"),
-    phone: phoneField,
+    phone: z
+      .string()
+      .min(1, "Informe o telefone")
+      .refine((value) => {
+        const digits = value.replace(/\D/g, "");
+        return digits.length === 10 || digits.length === 11;
+      }, "Telefone inválido (informe DDD + número)"),
     password: z.string().min(6, "A senha deve ter ao menos 6 caracteres"),
     confirmPassword: z.string().min(1, "Confirme a senha"),
     initialBalance: z.coerce.number({ message: "Informe um valor" }),
@@ -28,12 +26,6 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 export type RegisterFormValues = z.infer<typeof registerSchema>;
-
-export const profileSchema = z.object({
-  name: z.string().min(2, "Informe seu nome completo"),
-  phone: phoneField,
-});
-export type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export const categorySchema = z.object({
   name: z.string().min(2, "Informe um nome para a categoria"),
