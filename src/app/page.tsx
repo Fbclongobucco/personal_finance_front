@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import {
+  ArrowDownCircle,
   ArrowRight,
+  ArrowUpCircle,
   CheckCircle2,
   CreditCard,
   LayoutDashboard,
@@ -18,8 +20,9 @@ import { useAuth } from "@/providers/auth-provider";
 const FEATURES = [
   {
     icon: Wallet,
-    title: "Saldo sempre atualizado",
-    description: "Cada receita ou despesa lançada ajusta seu saldo na hora, sem cálculos manuais.",
+    title: "Saldo do mês em tempo real",
+    description:
+      "O painel abre no mês corrente e recalcula receitas menos despesas a cada lançamento. Meses anteriores ficam na aba Histórico.",
   },
   {
     icon: Tags,
@@ -36,6 +39,14 @@ const FEATURES = [
     title: "Controle de pendências",
     description: 'Marque despesas como pagas ("dar baixa") assim que quitar a conta.',
   },
+];
+
+/** Mock do painel no hero. Os valores fecham com os cards: 4.500,00 - 1.251,10 = 3.248,90. */
+const PREVIEW_TRANSACTIONS = [
+  { label: "Salário", income: true, pending: false, value: "+ R$ 4.500,00" },
+  { label: "Supermercado", income: false, pending: false, value: "- R$ 612,40" },
+  { label: "Aluguel", income: false, pending: true, value: "- R$ 550,00" },
+  { label: "Assinaturas", income: false, pending: false, value: "- R$ 88,70" },
 ];
 
 const STEPS = [
@@ -106,20 +117,45 @@ export default function LandingPage() {
 
           <div className="relative">
             <Card className="border-ink-200 shadow-lg">
-              <div className="rounded-lg bg-brand-700 p-4 text-white">
-                <p className="text-xs text-brand-100">Saldo atual</p>
+              <div className="rounded-lg bg-gradient-to-br from-brand-700 to-brand-900 p-4 text-white">
+                <div className="flex items-center gap-2 text-brand-100">
+                  <Wallet className="h-3.5 w-3.5" />
+                  <p className="text-xs font-medium">Saldo do mês</p>
+                </div>
                 <p className="mt-1 text-2xl font-bold">R$ 3.248,90</p>
+                <p className="mt-1 text-[11px] text-brand-100">Receitas menos despesas do mês</p>
               </div>
-              <div className="mt-4 flex flex-col gap-2">
-                {[
-                  { label: "Salário", tone: "money" as const, value: "+ R$ 4.500,00" },
-                  { label: "Supermercado", tone: "brand" as const, value: "- R$ 612,40" },
-                  { label: "Assinaturas", tone: "brand" as const, value: "- R$ 89,90" },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center justify-between rounded-md border border-ink-100 px-3 py-2">
-                    <span className="text-sm text-ink-700">{item.label}</span>
+
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div className="rounded-lg border border-ink-100 p-3">
+                  <div className="flex items-center gap-1.5 text-ink-500">
+                    <ArrowUpCircle className="h-3.5 w-3.5 text-money-600" />
+                    <p className="text-[11px]">Receitas</p>
+                  </div>
+                  <p className="mt-1 text-base font-bold text-money-700">R$ 4.500,00</p>
+                </div>
+                <div className="rounded-lg border border-ink-100 p-3">
+                  <div className="flex items-center gap-1.5 text-ink-500">
+                    <ArrowDownCircle className="h-3.5 w-3.5 text-brand-600" />
+                    <p className="text-[11px]">Despesas</p>
+                  </div>
+                  <p className="mt-1 text-base font-bold text-brand-700">R$ 1.251,10</p>
+                </div>
+              </div>
+
+              <div className="mt-3 flex flex-col gap-2">
+                {PREVIEW_TRANSACTIONS.map((item) => (
+                  <div key={item.label} className="flex items-center justify-between gap-2 rounded-md border border-ink-100 px-3 py-2">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <span className="truncate text-sm text-ink-700">{item.label}</span>
+                      {item.pending && (
+                        <span className="shrink-0 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-800">
+                          Pendente
+                        </span>
+                      )}
+                    </span>
                     <span
-                      className={`text-sm font-semibold ${item.tone === "money" ? "text-money-700" : "text-brand-700"}`}
+                      className={`shrink-0 text-sm font-semibold ${item.income ? "text-money-700" : "text-brand-700"}`}
                     >
                       {item.value}
                     </span>
