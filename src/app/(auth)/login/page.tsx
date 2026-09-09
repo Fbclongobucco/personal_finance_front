@@ -6,11 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/presentation/components/ui/Button";
-import { Card } from "@/presentation/components/ui/Card";
-import { Input } from "@/presentation/components/ui/FormField";
-import { LoginFormValues, loginSchema } from "@/presentation/lib/validation";
-import { extractErrorMessage, useAuth } from "@/presentation/providers/auth-provider";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/FormField";
+import { LoginFormValues, loginSchema } from "@/lib/validation";
+import { extractErrorMessage, useAuth } from "@/providers/auth-provider";
 
 export default function LoginPage() {
   return (

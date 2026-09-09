@@ -3,22 +3,29 @@
 import { useMemo, useState } from "react";
 import { ArrowDownCircle, ArrowUpCircle, BarChart3, PieChart, Plus, Wallet } from "lucide-react";
 
-import { CategoryPieChart } from "@/presentation/components/charts/CategoryPieChart";
-import { MonthlyBarChart } from "@/presentation/components/charts/MonthlyBarChart";
-import { TransactionFormModal } from "@/presentation/components/forms/TransactionFormModal";
-import { Badge } from "@/presentation/components/ui/Badge";
-import { Button } from "@/presentation/components/ui/Button";
-import { Card } from "@/presentation/components/ui/Card";
-import { EmptyState } from "@/presentation/components/ui/EmptyState";
-import { PageHeader } from "@/presentation/components/ui/PageHeader";
-import { Spinner } from "@/presentation/components/ui/Spinner";
-import { TransactionRow } from "@/presentation/components/transactions/TransactionRow";
-import { useCurrentUser } from "@/presentation/hooks/use-user";
-import { useDeleteTransaction, useSettleTransaction, useTransactions } from "@/presentation/hooks/use-transactions";
-import { buildCategoryBreakdown, buildMonthlySeries } from "@/presentation/lib/chart-data";
-import { endOfDayParam, formatCurrency, startOfDayParam, startOfMonth } from "@/presentation/lib/formatters";
-import { extractErrorMessage } from "@/presentation/providers/auth-provider";
-import { useToast } from "@/presentation/providers/toast-provider";
+import { CategoryPieChart } from "@/components/charts/CategoryPieChart";
+import { MonthlyBarChart } from "@/components/charts/MonthlyBarChart";
+import { TransactionFormModal } from "@/components/forms/TransactionFormModal";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Spinner } from "@/components/ui/Spinner";
+import { TransactionRow } from "@/components/transactions/TransactionRow";
+import { useCurrentUser } from "@/hooks/use-user";
+import { useDeleteTransaction, useMonthSummary, useSettleTransaction, useTransactions } from "@/hooks/use-transactions";
+import {
+  buildCategoryBreakdown,
+  buildMonthlySeries,
+  currentMonth,
+  monthFilters,
+  monthLabel,
+  shiftMonth,
+} from "@/lib/analytics";
+import { formatCurrency } from "@/lib/formatters";
+import { extractErrorMessage } from "@/providers/auth-provider";
+import { useToast } from "@/providers/toast-provider";
 
 const MONTHS_BACK = 6;
 
@@ -27,30 +34,22 @@ export default function DashboardPage() {
   const { data: user } = useCurrentUser();
   const toast = useToast();
 
-  const filters = useMemo(() => {
-    const now = new Date();
-    return { start: startOfDayParam(startOfMonth(now)), end: endOfDayParam(now) };
-  }, []);
-
-  const { data: transactions, isLoading } = useTransactions(filters);
+  const month = useMemo(() => currentMonth(), []);
+  const { data: transactions, isLoading, summary } = useMonthSummary(month);
   const settleTransaction = useSettleTransaction();
   const deleteTransaction = useDeleteTransaction();
 
-  const chartFilters = useMemo(() => {
-    const now = new Date();
-    const start = startOfMonth(new Date(now.getFullYear(), now.getMonth() - (MONTHS_BACK - 1), 1));
-    return { start: startOfDayParam(start), end: endOfDayParam(now) };
-  }, []);
+  // Os gráficos olham uma janela maior: do início do mês mais antigo até o fim do mês corrente.
+  const chartFilters = useMemo(
+    () => ({ start: monthFilters(shiftMonth(month, -(MONTHS_BACK - 1))).start, end: monthFilters(month).end }),
+    [month]
+  );
   const { data: chartTransactions, isLoading: isChartLoading } = useTransactions(chartFilters);
 
-  const summary = useMemo(() => {
-    const items = transactions ?? [];
-    const income = items.filter((t) => t.category.type === "INCOME").reduce((sum, t) => sum + t.amount, 0);
-    const expense = items.filter((t) => t.category.type === "EXPENSE").reduce((sum, t) => sum + t.amount, 0);
-    const pending = items.filter((t) => !t.paid);
-    const recent = [...items].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
-    return { income, expense, pending, recent };
-  }, [transactions]);
+  const recent = useMemo(
+    () => [...(transactions ?? [])].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6),
+    [transactions]
+  );
 
   const monthlySeries = useMemo(() => buildMonthlySeries(chartTransactions ?? [], MONTHS_BACK), [chartTransactions]);
   const hasMonthlyData = monthlySeries.some((point) => point.income > 0 || point.expense > 0);
@@ -90,12 +89,15 @@ export default function DashboardPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="bg-brand-700 text-white">
+        <Card className="border-transparent bg-gradient-to-br from-brand-700 to-brand-900 text-white shadow-sm">
           <div className="flex items-center gap-2 text-brand-100">
             <Wallet className="h-4 w-4" />
-            <p className="text-sm">Saldo atual</p>
+            <p className="text-sm font-medium">Saldo do mês</p>
           </div>
-          <p className="mt-2 text-2xl font-bold">{formatCurrency(user?.balance)}</p>
+          <p className="mt-2 text-2xl font-bold text-white">{formatCurrency(summary.balance)}</p>
+          <p className="mt-1 text-xs text-brand-100">
+            Receitas menos despesas de {monthLabel(month).toLowerCase()}
+          </p>
         </Card>
         <Card>
           <div className="flex items-center gap-2 text-ink-500">
@@ -161,7 +163,7 @@ export default function DashboardPage() {
         <h2 className="mb-2 text-sm font-semibold text-ink-800">Transações do mês</h2>
         {isLoading ? (
           <Spinner label="Carregando transações…" />
-        ) : summary.recent.length === 0 ? (
+        ) : recent.length === 0 ? (
           <EmptyState
             icon={Wallet}
             title="Nenhuma transação neste mês"
@@ -170,7 +172,7 @@ export default function DashboardPage() {
           />
         ) : (
           <div className="flex flex-col gap-2">
-            {summary.recent.map((transaction) => (
+            {recent.map((transaction) => (
               <TransactionRow
                 key={transaction.id}
                 transaction={transaction}

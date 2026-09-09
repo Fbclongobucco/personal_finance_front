@@ -3,18 +3,18 @@
 import { useMemo, useState } from "react";
 import { ArrowLeftRight, Plus } from "lucide-react";
 
-import { CategoryType } from "@/domain/entities/category";
-import { TransactionFormModal } from "@/presentation/components/forms/TransactionFormModal";
-import { Button } from "@/presentation/components/ui/Button";
-import { Card } from "@/presentation/components/ui/Card";
-import { EmptyState } from "@/presentation/components/ui/EmptyState";
-import { PageHeader } from "@/presentation/components/ui/PageHeader";
-import { Spinner } from "@/presentation/components/ui/Spinner";
-import { TransactionRow } from "@/presentation/components/transactions/TransactionRow";
-import { useDeleteTransaction, useSettleTransaction, useTransactions } from "@/presentation/hooks/use-transactions";
-import { endOfDayParam, startOfDayParam, startOfMonth, toDateInputValue } from "@/presentation/lib/formatters";
-import { extractErrorMessage } from "@/presentation/providers/auth-provider";
-import { useToast } from "@/presentation/providers/toast-provider";
+import { CategoryType } from "@/types";
+import { TransactionFormModal } from "@/components/forms/TransactionFormModal";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Spinner } from "@/components/ui/Spinner";
+import { TransactionRow } from "@/components/transactions/TransactionRow";
+import { useDeleteTransaction, useSettleTransaction, useTransactions } from "@/hooks/use-transactions";
+import { endOfDayParam, startOfDayParam, startOfMonth, toDateInputValue } from "@/lib/formatters";
+import { extractErrorMessage } from "@/providers/auth-provider";
+import { useToast } from "@/providers/toast-provider";
 
 type TypeFilter = "ALL" | CategoryType;
 

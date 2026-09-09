@@ -1,10 +1,10 @@
 "use client";
 
-import { BottomNav } from "@/presentation/components/layout/BottomNav";
-import { MobileTopBar } from "@/presentation/components/layout/MobileTopBar";
-import { Sidebar } from "@/presentation/components/layout/Sidebar";
-import { Spinner } from "@/presentation/components/ui/Spinner";
-import { useAuth } from "@/presentation/providers/auth-provider";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { MobileTopBar } from "@/components/layout/MobileTopBar";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Spinner } from "@/components/ui/Spinner";
+import { useAuth } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

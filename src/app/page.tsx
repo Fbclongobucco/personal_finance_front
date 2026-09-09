@@ -10,10 +10,10 @@ import {
   Wallet,
 } from "lucide-react";
 
-import { Logo } from "@/presentation/components/brand/Logo";
-import { Button } from "@/presentation/components/ui/Button";
-import { Card } from "@/presentation/components/ui/Card";
-import { useAuth } from "@/presentation/providers/auth-provider";
+import { Logo } from "@/components/brand/Logo";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { useAuth } from "@/providers/auth-provider";
 
 const FEATURES = [
   {

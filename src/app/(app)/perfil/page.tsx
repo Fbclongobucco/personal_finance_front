@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut, Mail, Phone, ShieldCheck, Trash2, Wallet } from "lucide-react";
+import { LogOut, Mail, Pencil, Phone, ShieldCheck, Trash2, Wallet } from "lucide-react";
 
-import { Badge } from "@/presentation/components/ui/Badge";
-import { Button } from "@/presentation/components/ui/Button";
-import { Card } from "@/presentation/components/ui/Card";
-import { ConfirmDialog } from "@/presentation/components/ui/ConfirmDialog";
-import { PageHeader } from "@/presentation/components/ui/PageHeader";
-import { useCurrentUser, useDeleteAccount } from "@/presentation/hooks/use-user";
-import { formatCurrency, formatDate } from "@/presentation/lib/formatters";
-import { extractErrorMessage, useAuth } from "@/presentation/providers/auth-provider";
-import { useToast } from "@/presentation/providers/toast-provider";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { ProfileFormModal } from "@/components/forms/ProfileFormModal";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { useCurrentUser, useDeleteAccount } from "@/hooks/use-user";
+import { formatDate } from "@/lib/formatters";
+import { extractErrorMessage, useAuth } from "@/providers/auth-provider";
+import { useToast } from "@/providers/toast-provider";
 
 export default function ProfilePage() {
   const { session, logout } = useAuth();
@@ -19,6 +20,7 @@ export default function ProfilePage() {
   const deleteAccount = useDeleteAccount();
   const toast = useToast();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   async function handleDeleteAccount() {
     if (!session) return;
@@ -33,20 +35,23 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <PageHeader title="Perfil" description="Suas informações de conta." />
+      <PageHeader
+        title="Perfil"
+        description="Suas informações de conta."
+        action={
+          <Button variant="secondary" onClick={() => setEditOpen(true)}>
+            <Pencil className="h-4 w-4" />
+            Editar perfil
+          </Button>
+        }
+      />
 
       <Card>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <p className="text-lg font-semibold text-ink-900">{user?.name}</p>
-            <Badge tone={user?.role === "ADMIN" ? "brand" : "neutral"} className="mt-1">
-              {user?.role === "ADMIN" ? "Administrador" : "Usuário"}
-            </Badge>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-ink-400">Saldo atual</p>
-            <p className="text-xl font-bold text-money-700">{formatCurrency(user?.balance)}</p>
-          </div>
+        <div>
+          <p className="text-lg font-semibold text-ink-900">{user?.name}</p>
+          <Badge tone={user?.role === "ADMIN" ? "brand" : "neutral"} className="mt-1">
+            {user?.role === "ADMIN" ? "Administrador" : "Usuário"}
+          </Badge>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 border-t border-ink-100 pt-6 text-sm">
@@ -92,6 +97,8 @@ export default function ProfilePage() {
         danger
         isLoading={deleteAccount.isPending}
       />
+
+      <ProfileFormModal open={editOpen} onClose={() => setEditOpen(false)} />
     </div>
   );
 }

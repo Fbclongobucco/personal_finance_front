@@ -3,19 +3,19 @@
 import { useState } from "react";
 import { Plus, Tags, Trash2 } from "lucide-react";
 
-import { CategoryType } from "@/domain/entities/category";
-import { CategoryFormModal } from "@/presentation/components/forms/CategoryFormModal";
-import { Badge } from "@/presentation/components/ui/Badge";
-import { Button } from "@/presentation/components/ui/Button";
-import { Card } from "@/presentation/components/ui/Card";
-import { ConfirmDialog } from "@/presentation/components/ui/ConfirmDialog";
-import { EmptyState } from "@/presentation/components/ui/EmptyState";
-import { PageHeader } from "@/presentation/components/ui/PageHeader";
-import { Spinner } from "@/presentation/components/ui/Spinner";
-import { useCategories, useDeleteCategory } from "@/presentation/hooks/use-categories";
-import { cn } from "@/presentation/lib/cn";
-import { extractErrorMessage } from "@/presentation/providers/auth-provider";
-import { useToast } from "@/presentation/providers/toast-provider";
+import { CategoryType } from "@/types";
+import { CategoryFormModal } from "@/components/forms/CategoryFormModal";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Spinner } from "@/components/ui/Spinner";
+import { useCategories, useDeleteCategory } from "@/hooks/use-categories";
+import { cn } from "@/lib/cn";
+import { extractErrorMessage } from "@/providers/auth-provider";
+import { useToast } from "@/providers/toast-provider";
 
 export default function CategoriesPage() {
   const toast = useToast();

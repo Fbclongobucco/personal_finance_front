@@ -1,8 +1,8 @@
 "use client";
 
-import { Logo } from "@/presentation/components/brand/Logo";
-import { Spinner } from "@/presentation/components/ui/Spinner";
-import { useAuth } from "@/presentation/providers/auth-provider";
+import { Logo } from "@/components/brand/Logo";
+import { Spinner } from "@/components/ui/Spinner";
+import { useAuth } from "@/providers/auth-provider";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
